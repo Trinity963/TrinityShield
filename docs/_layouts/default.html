@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title }} | TrinityShield</title>
+
+    <!-- Global Purple Stylesheet -->
+    <link rel="stylesheet" href="/TrinityShield/docs/css/purple.css">
+
+    {%- seo -%}
+</head>
+
+<body>
+
+<header class="ts-header">
+    <div class="ts-header-title">
+        <a href="/TrinityShield/">TrinityShield</a>
+    </div>
+</header>
+
+<div class="ts-container">
+    {{ content }}
+</div>
+
+<footer class="ts-footer">
+    © {{ site.time | date: '%Y' }} TrinityShield — Documentation Portal
+</footer>
+
+</body>
+</html>
