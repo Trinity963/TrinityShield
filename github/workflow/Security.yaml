@@ -1,0 +1,48 @@
+      # -------------------------------------------
+      # SECURITY MODULE — ENTERPRISE LEVEL
+      # -------------------------------------------
+
+      # 1. Generate SHA256 + SHA512 hashes
+      - name: Generate SHA256 + SHA512
+        run: |
+          sha256sum TrinityShield.min.user.js > TrinityShield.min.user.js.sha256
+          sha512sum TrinityShield.min.user.js > TrinityShield.min.user.js.sha512
+          echo "Generated SHA checksums."
+
+      # 2. Supply chain / dependency security scan
+      - name: Install npm audit tool
+        run: npm install --silent
+
+      - name: Run npm audit security scan
+        run: |
+          npm audit --production || true
+
+      # 3. Run static analysis (CodeQL-compatible)
+      - name: Static analysis: pattern scanning
+        run: |
+          grep -RIn "eval(" TrinityShield.user.js && echo "WARNING: eval detected" || true
+          grep -RIn "innerHTML" TrinityShield.user.js || true
+          grep -RIn "Function(" TrinityShield.user.js || true
+
+      # 4. GPG signing (optional — requires secrets)
+      - name: GPG sign minified script
+        if: env.GPG_PRIVATE_KEY != ''
+        run: |
+          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
+          gpg --batch --import private.key
+          gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" \
+              -o TrinityShield.min.user.js.sig --sign TrinityShield.min.user.js
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE:   ${{ secrets.GPG_PASSPHRASE }}
+
+      # 5. Integrity Attestation
+      - name: Create attestation file
+        run: |
+          echo "Build: $GITHUB_RUN_ID" > integrity.txt
+          echo "Timestamp: $(date)" >> integrity.txt
+          echo "Version: ${{ steps.versioning.outputs.new_version }}" >> integrity.txt
+          echo "SHA256:" >> integrity.txt
+          cat TrinityShield.min.user.js.sha256 >> integrity.txt
+          echo "SHA512:" >> integrity.txt
+          cat TrinityShield.min.user.js.sha512 >> integrity.txt

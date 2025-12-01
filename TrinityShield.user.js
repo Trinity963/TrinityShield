@@ -59,9 +59,24 @@ if (!window.TrinityShield) {
 
 const TS = window.TrinityShield;
 
+// ---- LOAD CSS globally ----
+function TS_loadCSS(file) {
+    const url = `https://raw.githubusercontent.com/Trinity963/TrinityShield/main/css/${file}`;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = url;
+    document.head.appendChild(link);
+}
+
+// Load all theme CSS
+TS_loadCSS("core.css");
+TS_loadCSS("dashboard.css");
+TS_loadCSS("debug-panel.css");
+TS_loadCSS("shield-theme-purple.css");
+
     TS.core = {
     name: "core",
-
+    
     async init() {
         console.log("[TSv6 Core] Init");
 

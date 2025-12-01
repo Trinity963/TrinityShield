@@ -1,0 +1,63 @@
+      # -------------------------------------------
+      # PERFORMANCE MODULE — ENTERPRISE LEVEL
+      # -------------------------------------------
+
+      # 1. Bundle Analyzer — count lines, bytes, compression delta
+      - name: Analyze bundle
+        run: |
+          ORIGINAL_SIZE=$(wc -c < TrinityShield.user.js)
+          MIN_SIZE=$(wc -c < TrinityShield.min.user.js)
+          DELTA=$((ORIGINAL_SIZE - MIN_SIZE))
+
+          echo "Original size: ${ORIGINAL_SIZE} bytes"
+          echo "Minified size: ${MIN_SIZE} bytes"
+          echo "Saved: ${DELTA} bytes" > bundle-report.txt
+
+          echo "" >> bundle-report.txt
+          echo "==== Minification Stats ====" >> bundle-report.txt
+          echo "Original: ${ORIGINAL_SIZE}" >> bundle-report.txt
+          echo "Minified: ${MIN_SIZE}" >> bundle-report.txt
+          echo "Delta:    ${DELTA}" >> bundle-report.txt
+
+      # 2. Dead Code Detector (regex-based)
+      - name: Dead code scanner
+        run: |
+          echo "=== Potential Dead Code ===" > deadcode-report.txt
+          grep -RIn "function .*{" TrinityShield.user.js > all_functions.txt
+          grep -RIn "TS\." TrinityShield.user.js > ts_usage.txt
+
+          # Look for functions not referenced by TS modules
+          while read -r fn; do
+            NAME=$(echo "$fn" | sed -n 's/.*function \(.*\)(.*/\1/p')
+            if ! grep -q "$NAME" TrinityShield.user.js; then
+              echo "Possibly unused: $NAME" >> deadcode-report.txt
+            fi
+          done < all_functions.txt || true
+
+      # 3. Complexity Analysis — cyclomatic complexity warning
+      - name: Complexity check
+        run: |
+          echo "=== Complexity Report ===" > complexity-report.txt
+          grep -RIn "if\|for\|while\|switch" TrinityShield.user.js >> complexity-report.txt
+
+      # 4. DOM Performance Analyzer — detect slow selectors
+      - name: DOM Performance Scanner
+        run: |
+          echo "=== DOM Performance Warnings ===" > dom-performance.txt
+          grep -RIn "querySelectorAll" TrinityShield.user.js && echo "Warning: querySelectorAll can be expensive" >> dom-performance.txt || true
+          grep -RIn "offsetHeight" TrinityShield.user.js && echo "Warning: offsetHeight triggers layout reflow" >> dom-performance.txt || true
+          grep -RIn "innerHTML" TrinityShield.user.js && echo "Warning: innerHTML can be unsafe/slow" >> dom-performance.txt || true
+
+      # 5. Expensive Loops Detector
+      - name: Loop hot-spot scan
+        run: |
+          echo "=== Loop Analysis ===" > loop-analysis.txt
+          grep -RIn "for (" TrinityShield.user.js >> loop-analysis.txt
+          grep -RIn "while (" TrinityShield.user.js >> loop-analysis.txt
+          grep -RIn "forEach" TrinityShield.user.js >> loop-analysis.txt
+
+      # 6. Save all performance reports to release artifacts
+      - name: Save performance reports
+        run: |
+          mkdir -p perf
+          mv *.txt perf/ || true

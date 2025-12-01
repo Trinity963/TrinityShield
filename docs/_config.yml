@@ -1,0 +1,20 @@
+theme: minima
+markdown: GFM
+plugins:
+  - jekyll-seo-tag
+
+include:
+  - sidebar.md
+  - api.md
+  - modules/
+  - generated-index.md
+
+sass:
+  style: compressed
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+      custom_css: /docs/css/purple-docs.css

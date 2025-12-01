@@ -1,0 +1,11 @@
+{
+  "name": "TrinityShield",
+  "version": "6.0.0",
+  "description": "Integrity, protection & auto-repair framework for ChatGPT",
+  "main": "TrinityShield.user.js",
+  "scripts": {
+    "build": "echo 'No local build, CI handles it'"
+  },
+  "author": "Trinity963",
+  "license": "MIT"
+}

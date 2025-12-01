@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Build Minified Script
+        run: npx uglify-js TrinityShield.user.js -o TrinityShield.min.user.js
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            TrinityShield.user.js
+            TrinityShield.min.user.js
+
+
+docs_build:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v3
+    - name: Build Documentation
+      run: node docs/build/build-docs.js
+    - name: Push Docs
+      run: |
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git add docs/api.md docs/modules/* docs/sidebar.md docs/generated-index.md
+        git commit -m "Auto-generated docs" || true
+        git push
+   - name: Update search index
+     run: |
+    echo "{}" > docs/search-index.json
+    git add docs/search-index.json
+    git commit -m "Search index updated" || true
+    git push

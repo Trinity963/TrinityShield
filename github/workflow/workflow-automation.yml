@@ -1,0 +1,254 @@
+name: TrinityShield Workflow Automation
+
+on:
+  pull_request:
+  issues:
+  workflow_dispatch:
+
+jobs:
+
+  # -------------------------------------------
+  # 1. Auto-label pull requests
+  # -------------------------------------------
+  auto_label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+
+  # -------------------------------------------
+  # 2. Auto-assign reviewers
+  # -------------------------------------------
+  auto_assign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: kentaro-m/auto-assign-action@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reviewers: |
+            Trinity963
+
+  # -------------------------------------------
+  # 3. Auto-merge safe PRs
+  # -------------------------------------------
+  auto_merge:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login != 'github-actions'
+    steps:
+      - uses: pascalgn/automerge-action@v0.15.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_METHOD: squash
+          MERGE_DELETE_BRANCH: true
+
+  # -------------------------------------------
+  # 4. Auto-close stale issues
+  # -------------------------------------------
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-stale: 45
+          days-before-close: 7
+          stale-issue-message: |
+            This issue is stale. If this is still important, please comment.
+          close-issue-message: |
+            Closing due to inactivity.
+
+  # -------------------------------------------
+  # 5. Auto-tag version aliases
+  # -------------------------------------------
+  version_aliases:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Move version tags
+        run: |
+          VERSION=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name')
+          echo "Latest version is: $VERSION"
+
+          git fetch --tags
+          git tag -f latest "$VERSION"
+          git tag -f stable "$VERSION"
+          git tag -f v6 "${VERSION%.*}"
+          git push origin --force --tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # -------------------------------------------
+  # 6. Auto-sync dev into main nightly
+  # -------------------------------------------
+  dev_sync:
+    runs-on: ubuntu-latest
+    schedule:
+      - cron: "0 3 * * *" # 3 AM nightly
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Merge dev → main
+        run: |
+          git fetch origin
+          git checkout main
+          git merge origin/dev || true
+          git push origin main || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # -------------------------------------------
+  # 7. Automatic first-time contributor message
+  # -------------------------------------------
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: >
+            Welcome to TrinityShield!  
+            Thank you for opening your first issue — we appreciate your contribution.
+          pr-message: >
+            Thank you for your first pull request!  
+            PR reviewers will look at this soon.
+
+  # -------------------------------------------
+  # 8. Commit Message Style Enforcement
+  # -------------------------------------------
+  commit_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce commit style
+        run: |
+          echo "Checking commit message style…"
+          if ! echo "${{ github.event.head_commit.message }}" | grep -E "^(fix|feat|docs|refactor|chore|perf|ci):"; then
+            echo "::warning::Commit message does not follow conventional commits"
+          fi
+name: TrinityShield Workflow Automation
+
+on:
+  pull_request:
+  issues:
+  workflow_dispatch:
+
+jobs:
+
+  # -------------------------------------------
+  # 1. Auto-label pull requests
+  # -------------------------------------------
+  auto_label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+
+  # -------------------------------------------
+  # 2. Auto-assign reviewers
+  # -------------------------------------------
+  auto_assign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: kentaro-m/auto-assign-action@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reviewers: |
+            Trinity963
+
+  # -------------------------------------------
+  # 3. Auto-merge safe PRs
+  # -------------------------------------------
+  auto_merge:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login != 'github-actions'
+    steps:
+      - uses: pascalgn/automerge-action@v0.15.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_METHOD: squash
+          MERGE_DELETE_BRANCH: true
+
+  # -------------------------------------------
+  # 4. Auto-close stale issues
+  # -------------------------------------------
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-stale: 45
+          days-before-close: 7
+          stale-issue-message: |
+            This issue is stale. If this is still important, please comment.
+          close-issue-message: |
+            Closing due to inactivity.
+
+  # -------------------------------------------
+  # 5. Auto-tag version aliases
+  # -------------------------------------------
+  version_aliases:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Move version tags
+        run: |
+          VERSION=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name')
+          echo "Latest version is: $VERSION"
+
+          git fetch --tags
+          git tag -f latest "$VERSION"
+          git tag -f stable "$VERSION"
+          git tag -f v6 "${VERSION%.*}"
+          git push origin --force --tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # -------------------------------------------
+  # 6. Auto-sync dev into main nightly
+  # -------------------------------------------
+  dev_sync:
+    runs-on: ubuntu-latest
+    schedule:
+      - cron: "0 3 * * *" # 3 AM nightly
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Merge dev → main
+        run: |
+          git fetch origin
+          git checkout main
+          git merge origin/dev || true
+          git push origin main || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # -------------------------------------------
+  # 7. Automatic first-time contributor message
+  # -------------------------------------------
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: >
+            Welcome to TrinityShield!  
+            Thank you for opening your first issue — we appreciate your contribution.
+          pr-message: >
+            Thank you for your first pull request!  
+            PR reviewers will look at this soon.
+
+  # -------------------------------------------
+  # 8. Commit Message Style Enforcement
+  # -------------------------------------------
+  commit_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce commit style
+        run: |
+          echo "Checking commit message style…"
+          if ! echo "${{ github.event.head_commit.message }}" | grep -E "^(fix|feat|docs|refactor|chore|perf|ci):"; then
+            echo "::warning::Commit message does not follow conventional commits"
+          fi

@@ -1,0 +1,7 @@
+name: TrinityShield Development Board
+description: Official board for tracking development progress
+columns:
+  - name: Backlog
+  - name: In Progress
+  - name: Review
+  - name: Done

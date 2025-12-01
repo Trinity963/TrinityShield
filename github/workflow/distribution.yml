@@ -1,0 +1,106 @@
+name: TrinityShield Multi-CDN Distribution
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  distribution:
+    runs-on: ubuntu-latest
+    steps:
+
+      # -------------------------------------------
+      # Checkout Release Contents
+      # -------------------------------------------
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      # -------------------------------------------
+      # Generate META file (fast-update for TM)
+      # -------------------------------------------
+      - name: Generate meta.js file
+        run: |
+          META="TrinityShield.meta.js"
+          VERSION="${{ github.event.release.tag_name }}"
+          RAW_URL="https://raw.githubusercontent.com/${{ github.repository }}/main/TrinityShield.user.js"
+          RAW_MIN_URL="https://raw.githubusercontent.com/${{ github.repository }}/main/TrinityShield.min.user.js"
+
+          echo "// ==UserScript=="                       >  $META
+          echo "// @name         TrinityShield"          >> $META
+          echo "// @version      ${VERSION#v}"            >> $META
+          echo "// @updateURL    $RAW_URL"               >> $META
+          echo "// @downloadURL  $RAW_MIN_URL"           >> $META
+          echo "// ==/UserScript=="                      >> $META
+
+      # -------------------------------------------
+      # Publish to jsDelivr (no action needed — auto mirrors GitHub tags)
+      # -------------------------------------------
+      - name: Publish jsDelivr Mirror
+        run: |
+          echo "jsDelivr CDN will auto-propagate:"
+          echo "https://cdn.jsdelivr.net/gh/${{ github.repository }}/TrinityShield.min.user.js"
+
+      # -------------------------------------------
+      # Publish to Cloudflare R2 (optional)
+      # -------------------------------------------
+      - name: Upload to Cloudflare R2
+        if: ${{ secrets.CLOUDFLARE_R2_KEY != '' }}
+        run: |
+          curl -X PUT \
+          -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_R2_KEY }}" \
+          --data-binary "@TrinityShield.min.user.js" \
+          "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT }}/r2/buckets/${{ secrets.CF_BUCKET }}/objects/trinityshield/TrinityShield.min.user.js"
+
+      # -------------------------------------------
+      # Upload integrity files to mirrors
+      # -------------------------------------------
+      - name: Upload integrity mirrors
+        run: |
+          mkdir mirrors
+          cp TrinityShield.min.user.js.sha256 mirrors/
+          cp TrinityShield.min.user.js.sha512 mirrors/
+
+      # -------------------------------------------
+      # Push META + mirrors back to repo
+      # -------------------------------------------
+      - name: Commit META + mirror hashes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add TrinityShield.meta.js mirrors/
+          git commit -m "CDN Distribution: META + Mirrors" || true
+          git push
+
+      # -------------------------------------------
+      # Generate distribution audit report
+      # -------------------------------------------
+      - name: Generate distribution report
+        run: |
+          echo "=== TrinityShield Distribution Audit ===" > distribution-report.txt
+          echo "Release: ${{ github.event.release.tag_name }}" >> distribution-report.txt
+          echo "" >> distribution-report.txt
+
+          echo "GitHub Raw:" >> distribution-report.txt
+          echo "https://raw.githubusercontent.com/${{ github.repository }}/main/TrinityShield.min.user.js" >> distribution-report.txt
+
+          echo "" >> distribution-report.txt
+          echo "jsDelivr CDN:" >> distribution-report.txt
+          echo "https://cdn.jsdelivr.net/gh/${{ github.repository }}/TrinityShield.min.user.js" >> distribution-report.txt
+
+          echo "" >> distribution-report.txt
+          echo "Cloudflare R2:" >> distribution-report.txt
+          echo "Enabled: ${{ secrets.CLOUDFLARE_R2_KEY != '' }}" >> distribution-report.txt
+
+      # -------------------------------------------
+      # Attach distribution report to release
+      # -------------------------------------------
+      - name: Upload distribution report
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: distribution-report.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

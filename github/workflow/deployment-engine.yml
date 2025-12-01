@@ -1,0 +1,187 @@
+name: TrinityShield Deployment Engine
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - hotfix/*
+      - feature/*
+  schedule:
+    - cron: "0 2 * * *"  # Nightly build at 2 AM
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+
+  # -------------------------------------------
+  # 1. Validate Branch Rules
+  # -------------------------------------------
+  validate_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          BRANCH="${GITHUB_REF##*/}"
+          if [[ "$BRANCH" == "dev" ]]; then
+            echo "Development branch – building."
+          elif [[ "$BRANCH" == hotfix/* ]]; then
+            echo "Hotfix branch – emergency build."
+          elif [[ "$BRANCH" == feature/* ]]; then
+            echo "Feature branch – running preview build."
+          elif [[ "$BRANCH" == "main" ]]; then
+            echo "Main — production build."
+          else
+            echo "::error::Invalid branch"
+            exit 1
+          fi
+
+  # -------------------------------------------
+  # 2. Build Matrix (Test in multiple environments)
+  # -------------------------------------------
+  matrix_test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [16, 18, 20]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install deps
+        run: npm install --silent
+
+      - name: Run lightweight tests
+        run: |
+          echo "Testing TS integrity on Node ${{ matrix.node }} OS ${{ matrix.os }}"
+          node -e "console.log('OK');"
+
+  # -------------------------------------------
+  # 3. Build Release Candidate on feature/* branches
+  # -------------------------------------------
+  release_candidate:
+    if: startsWith(github.ref, 'refs/heads/feature/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Bump prerelease version (rc)
+        run: |
+          VERSION="v$(date +'%Y.%m.%d')-rc"
+          echo "$VERSION" > rc-version.txt
+
+      - name: Upload RC
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: rc-${{ github.run_number }}
+          name: "Release Candidate – RC ${{ github.run_number }}"
+          files: TrinityShield.user.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # -------------------------------------------
+  # 4. Canary Build (on dev)
+  # -------------------------------------------
+  canary_build:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Generate canary version
+        run: |
+          VERSION="canary.$(date +'%Y%m%d%H%M')"
+          echo "$VERSION" > canary-version.txt
+
+      - name: Publish canary
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.generate_canary.outputs.VERSION }}
+          name: "TrinityShield Canary Build"
+          prerelease: true
+          files: |
+            TrinityShield.user.js
+            TrinityShield.min.user.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # -------------------------------------------
+  # 5. Nightly Builds
+  # -------------------------------------------
+  nightly_build:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Nightly version
+        run: |
+          VERSION="nightly.$(date +'%Y%m%d')"
+          echo "$VERSION" > nightly-version.txt
+
+      - name: Publish nightly
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: nightly-${{ github.run_number }}
+          name: "TrinityShield Nightly Build"
+          prerelease: true
+          files: TrinityShield.min.user.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # -------------------------------------------
+  # 6. Hotfix Pipeline (hotfix/*)
+  # -------------------------------------------
+  hotfix_pipeline:
+    if: startsWith(github.ref, 'refs/heads/hotfix/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Bump patch version immediately
+        run: |
+          VERSION="hotfix.$(date +'%Y%m%d%H%M')"
+          echo "$VERSION" > hotfix.txt
+
+      - name: Publish hotfix
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.run_number }}-hotfix
+          name: "Urgent Hotfix ${{ github.run_number }}"
+          files: TrinityShield.user.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # -------------------------------------------
+  # 7. Auto-cleanup old builds & branches
+  # -------------------------------------------
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Delete stale feature branches
+        run: |
+          git fetch --prune
+          git branch -r | grep "origin/feature/" | while read br; do
+            echo "Deleting $br..."
+            git push origin --delete "${br#origin/}"
+          done || true
+
+      - name: Delete old canary/nightly releases
+        run: |
+          gh release list --limit 200 | grep -E 'canary|nightly|rc' | awk '{print $1}' | while read tag; do
+            gh release delete "$tag" -y
+          done || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

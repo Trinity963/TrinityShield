@@ -1,0 +1,23 @@
+/* TrinityShield Dashboard – Purple Theme */
+
+#ts-dashboard {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(20, 10, 30, 0.85);
+    border: 1px solid #8E5CF6;
+    box-shadow: 0 0 12px #8E5CF644;
+    color: #EDE6FF;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    max-width: 260px;
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 999999;
+    font-family: "Segoe UI", sans-serif;
+}
+
+#ts-dashboard b {
+    color: #CDB6FF;
+}

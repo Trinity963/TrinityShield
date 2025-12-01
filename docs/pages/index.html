@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TrinityShield v6 – Integrity & Protection Framework</title>
+<link rel="stylesheet" href="../css/purple-theme.css">
+
+</head>
+<body>
+
+<header>
+    <img src="assets/banner.svg" class="banner">
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="pages/installation.html">Installation</a>
+    <a href="pages/modules.html">Modules</a>
+    <a href="pages/architecture.html">Architecture</a>
+    <a href="pages/debugging.html">Debugging</a>
+    <a href="pages/changelog.html">Changelog</a>
+    <button id="themeToggle">☾</button>
+
+</nav>
+
+<section class="content">
+    <h1>TrinityShield v6</h1>
+    <p class="subtitle">Integrity • Protection • Auto-Repair for ChatGPT</p>
+
+    <p>
+        TrinityShield is a modular browser-side stability framework that repairs corrupted
+        local browser data, enhances ChatGPT startup reliability, and monitors the integrity
+        of your runtime environment.
+    </p>
+
+    <a href="https://github.com/Trinity963/TrinityShield/raw/main/TrinityShield.user.js" class="install-btn">
+        Install TrinityShield
+    </a>
+
+    <h2>Core Features</h2>
+    <ul>
+        <li>Safe Boot Rendering System</li>
+        <li>Auto-Purifier (Cache / IDB / LocalStorage repair)</li>
+        <li>Conversation Integrity Scanner</li>
+        <li>Full Power Audit (CDN / SW / Cache Sources)</li>
+        <li>Debug Panel (Real-Time Log Capture)</li>
+        <li>Module Framework</li>
+        <li>Purple Theme UI</li>
+    </ul>
+</section>
+
+<footer>
+    TrinityShield v6 – MIT License – © Trinity963
+</footer>
+<script>
+const btn = document.createElement("div");
+btn.id = "backToTop";
+btn.innerHTML = "↑";
+document.body.appendChild(btn);
+
+window.addEventListener("scroll", () => {
+    btn.style.display = window.scrollY > 300 ? "flex" : "none";
+});
+btn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+document.getElementById("themeToggle").onclick = () => {
+    document.body.classList.toggle("light-mode");
+    localStorage.setItem("tsTheme", document.body.classList.contains("light-mode") ? "light" : "dark");
+};
+
+// Load saved theme
+if (localStorage.getItem("tsTheme") === "light") {
+    document.body.classList.add("light-mode");
+}
+</script>
+
+</body>
+</html>

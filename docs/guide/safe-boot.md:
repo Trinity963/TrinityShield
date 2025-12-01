@@ -1,0 +1,11 @@
+# 🛡 Safe Boot Mode
+
+Safe Boot freezes ChatGPT rendering until TrinityShield verifies:
+
+- IndexedDB validity
+- LocalStorage consistency
+- ServiceWorker integrity
+- Cache health
+- JSON render safety
+
+If corruption is found, Safe Boot calls the Auto-Purifier before allowing render.

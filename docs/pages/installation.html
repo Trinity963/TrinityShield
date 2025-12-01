@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Installation – TrinityShield</title>
+<link rel="stylesheet" href="../css/purple-theme.css">
+</head>
+<body>
+
+<header><img src="../assets/banner.svg" class="banner"></header>
+<nav>
+    <a href="../index.html">Home</a>
+    <a href="installation.html" class="active">Installation</a>
+    <a href="modules.html">Modules</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="debugging.html">Debugging</a>
+    <a href="changelog.html">Changelog</a>
+    <button id="themeToggle">☾</button>
+
+</nav>
+
+<div class="content">
+
+<h1>Installation</h1>
+
+<p>To install TrinityShield:</p>
+
+<ol>
+    <li>Install <strong>Tampermonkey</strong> from https://www.tampermonkey.net/</li>
+    <li>Click the button below:</li>
+</ol>
+
+<a class="install-btn" href="https://github.com/Trinity963/TrinityShield/raw/main/TrinityShield.user.js">
+    Install TrinityShield
+</a>
+
+<p>Your browser will prompt you to confirm installation.</p>
+
+</div>
+
+<footer>TrinityShield v6 – MIT License</footer>
+<script>
+const btn = document.createElement("div");
+btn.id = "backToTop";
+btn.innerHTML = "↑";
+document.body.appendChild(btn);
+
+window.addEventListener("scroll", () => {
+    btn.style.display = window.scrollY > 300 ? "flex" : "none";
+});
+btn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+document.getElementById("themeToggle").onclick = () => {
+    document.body.classList.toggle("light-mode");
+    localStorage.setItem("tsTheme", document.body.classList.contains("light-mode") ? "light" : "dark");
+};
+
+// Load saved theme
+if (localStorage.getItem("tsTheme") === "light") {
+    document.body.classList.add("light-mode");
+}
+</script>
+
+</body>
+</html>

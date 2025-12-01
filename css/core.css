@@ -1,0 +1,10 @@
+/* TrinityShield Core Styling (Purple Edition) */
+
+html.ts-safe-boot {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+html.ts-ready {
+  opacity: 1;
+}

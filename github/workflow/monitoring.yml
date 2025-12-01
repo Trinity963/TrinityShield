@@ -1,0 +1,135 @@
+name: TrinityShield Monitoring & Telemetry
+
+on:
+  schedule:
+    - cron: "*/30 * * * *" # Every 30 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+
+  # -------------------------------------------
+  # 1. Track GitHub Downloads
+  # -------------------------------------------
+  download_stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch release download stats
+        id: dl
+        run: |
+          curl -s https://api.github.com/repos/${{ github.repository }}/releases |
+          jq '[.[] | {tag_name, assets: [.assets[] | {name, download_count}]}]' > download-stats.json
+
+      - name: Save stats
+        run: |
+          mkdir -p telemetry
+          mv download-stats.json telemetry/
+
+      - name: Commit updated stats
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add telemetry/download-stats.json
+          git commit -m "Telemetry: Updated download stats" || true
+          git push
+
+  # -------------------------------------------
+  # 2. Track jsDelivr CDN Hits (usage analytics)
+  # -------------------------------------------
+  jsdelivr_stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch jsDelivr stats
+        run: |
+          curl -s "https://data.jsdelivr.com/v1/package/gh/${{ github.repository }}/stats" > telemetry/jsdelivr-stats.json || echo "{}"
+
+      - name: Commit updated stats
+        run: |
+          git add telemetry/jsdelivr-stats.json
+          git commit -m "Telemetry: Updated jsDelivr stats" || true
+          git push
+
+  # -------------------------------------------
+  # 3. Generate monitoring dashboard
+  # -------------------------------------------
+  dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build monitoring dashboard
+        run: |
+          mkdir -p docs/monitoring
+          echo "# TrinityShield Monitoring Dashboard" > docs/monitoring/index.md
+          echo "" >> docs/monitoring/index.md
+
+          echo "## Download Stats" >> docs/monitoring/index.md
+          echo "\`\`\`json" >> docs/monitoring/index.md
+          cat telemetry/download-stats.json >> docs/monitoring/index.md
+          echo "\`\`\`" >> docs/monitoring/index.md
+
+          echo "## jsDelivr CDN Stats" >> docs/monitoring/index.md
+          echo "\`\`\`json" >> docs/monitoring/index.md
+          cat telemetry/jsdelivr-stats.json >> docs/monitoring/index.md
+          echo "\`\`\`" >> docs/monitoring/index.md
+
+      - name: Commit monitoring dashboard
+        run: |
+          git add docs/monitoring/index.md
+          git commit -m "Telemetry: Dashboard updated" || true
+          git push
+
+  # -------------------------------------------
+  # 4. Load Failure Telemetry (Userscript did not boot)
+  # -------------------------------------------
+  load_failures:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for load failure issues
+        run: |
+          curl -s https://api.github.com/repos/${{ github.repository }}/issues |
+          jq '[.[] | select(.title | contains("load failure"))]' > telemetry/load-failures.json
+
+      - name: Commit failures
+        run: |
+          git add telemetry/load-failures.json
+          git commit -m "Telemetry: Load failure events updated" || true
+          git push
+
+  # -------------------------------------------
+  # 5. Discord alerts (optional)
+  # -------------------------------------------
+  discord_alert:
+    if: secrets.DISCORD_WEBHOOK != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord of new telemetry
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\":\"Telemetry update for TrinityShield completed successfully.\"}" \
+               ${{ secrets.DISCORD_WEBHOOK }}
+
+  # -------------------------------------------
+  # 6. Status Badge Updater
+  # -------------------------------------------
+  badges:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update badges
+        run: |
+          DL=$(jq '.[0].assets | map(.download_count) | add' telemetry/download-stats.json)
+          CDN=$(jq '.total' telemetry/jsdelivr-stats.json)
+          echo "Downloads: $DL"
+          echo "CDN Hits: $CDN"
+
+          sed -i "s|!\[downloads\].*|![downloads](https://img.shields.io/badge/downloads-${DL}-8E5CF6)|" README.md || true
+          sed -i "s|!\[cdn\].*|![cdn](https://img.shields.io/badge/cdn_hits-${CDN}-8E5CF6)|" README.md || true
+
+      - name: Commit updated badges
+        run: |
+          git add README.md
+          git commit -m "Telemetry: Updated badges" || true
+          git push

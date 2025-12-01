@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Architecture – TrinityShield</title>
+<link rel="stylesheet" href="../css/purple-theme.css">
+</head>
+<body>
+
+<header><img src="../assets/banner.svg" class="banner"></header>
+<nav>
+    <a href="../index.html">Home</a>
+    <a href="installation.html">Installation</a>
+    <a href="modules.html">Modules</a>
+    <a href="architecture.html" class="active">Architecture</a>
+    <a href="debugging.html">Debugging</a>
+    <a href="changelog.html">Changelog</a>
+    <button id="themeToggle">☾</button>
+
+</nav>
+
+<div class="content">
+
+<h1>Architecture</h1>
+
+<p>
+TrinityShield attaches to a single global object:
+</p>
+
+<pre><code>window.TrinityShield = { modules: [], use(){}, init(){} }
+</code></pre>
+
+<p>Modules register with:</p>
+
+<pre><code>TS.use({ name: "mod", async init(){} })
+</code></pre>
+
+<p>The boot order is strict:</p>
+
+<ol>
+    <li>Core</li>
+    <li>Corruption Engine</li>
+    <li>Auto-Purifier</li>
+    <li>Safe Boot V2</li>
+    <li>Conversation Scanner</li>
+    <li>Full Power Audit</li>
+    <li>Debug Panel</li>
+</ol>
+
+</div>
+
+<footer>TrinityShield v6 – MIT License</footer>
+<script>
+const btn = document.createElement("div");
+btn.id = "backToTop";
+btn.innerHTML = "↑";
+document.body.appendChild(btn);
+
+window.addEventListener("scroll", () => {
+    btn.style.display = window.scrollY > 300 ? "flex" : "none";
+});
+btn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+document.getElementById("themeToggle").onclick = () => {
+    document.body.classList.toggle("light-mode");
+    localStorage.setItem("tsTheme", document.body.classList.contains("light-mode") ? "light" : "dark");
+};
+
+// Load saved theme
+if (localStorage.getItem("tsTheme") === "light") {
+    document.body.classList.add("light-mode");
+}
+</script>
+
+</body>
+</html>

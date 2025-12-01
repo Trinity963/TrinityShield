@@ -1,0 +1,105 @@
+name: TrinityShield AI Automation
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+
+  # -------------------------------------------
+  # 1. AI PR Review (GitHub OASIS-powered)
+  # -------------------------------------------
+  ai_pr_review:
+    name: AI Code Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: AI Review
+        uses: github/ai-code-review@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          model: gpt-4o-mini
+          comment: true
+
+  # -------------------------------------------
+  # 2. AI Release Notes (semantic release)
+  # -------------------------------------------
+  ai_release_notes:
+    name: AI Release Notes
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Generate AI release notes
+        id: ai-notes
+        uses: github/ai-commit-summarizer@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          model: gpt-4o-mini
+          max_tokens: 500
+
+      - name: Save release notes
+        run: |
+          echo "${{ steps.ai-notes.outputs.summary }}" > ai-release-notes.md
+
+  # -------------------------------------------
+  # 3. AI Lint Auto-Fix (fix formatting, syntax, spacing)
+  # -------------------------------------------
+  ai_lint_fix:
+    name: AI Auto-Lint Fix
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: AI lint auto-fix
+        uses: github/ai-code-fix@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          model: gpt-4o-mini
+          files: TrinityShield.user.js
+
+      - name: Commit fixes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add TrinityShield.user.js
+          git commit -m "AI Lint Auto-Fix" || true
+          git push || true
+
+  # -------------------------------------------
+  # 4. AI Security/Logic Anomaly Detection
+  # -------------------------------------------
+  ai_anomaly_scan:
+    name: AI Anomaly Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run AI anomaly detection
+        id: scan
+        uses: github/ai-scan@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          model: gpt-4o-mini-security
+          files: TrinityShield.user.js
+
+      - name: Save scan report
+        run: echo "${{ steps.scan.outputs.report }}" > ai-security-report.md
+
+      - name: Upload scan report
+        uses: actions/upload-artifact@v3
+        with:
+          name: ai-security-report
+          path: ai-security-report.md
+
+  # -------------------------------

@@ -1,0 +1,22 @@
+.install-btn {
+    display: inline-block;
+    padding: 14px 26px;
+    background: #8E5CF6;
+    color: white !important;
+    border-radius: 12px;
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 2px solid #BB86FF;
+    transition: 0.2s;
+}
+.install-btn:hover {
+    background: #5A33A8;
+    border-color: #8E5CF6;
+}
+.version-tag {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-left: 6px;
+}

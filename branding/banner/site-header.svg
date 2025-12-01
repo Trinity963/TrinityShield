@@ -1,0 +1,9 @@
+<svg width="1600" height="260" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="260" fill="#0f0f16"/>
+  <text x="50%" y="55%" fill="#8E5CF6" font-size="88" font-family="Inter" text-anchor="middle">
+    TrinityShield
+  </text>
+  <text x="50%" y="75%" fill="#BB86FF" font-size="28" text-anchor="middle">
+    Modular Integrity Framework for ChatGPT
+  </text>
+</svg>

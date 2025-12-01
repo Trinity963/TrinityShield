@@ -1,0 +1,23 @@
+/* TrinityShield Debug Panel – Purple Edition */
+
+#ts-debug {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 320px;
+    height: 220px;
+    background: rgba(15, 10, 25, 0.8);
+    border: 1px solid #8E5CF6;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 12px;
+    color: #EDE6FF;
+    overflow-y: auto;
+    z-index: 999999;
+    font-family: "Consolas", "Fira Code", monospace;
+    box-shadow: 0 0 12px #8E5CF644;
+}
+
+.ts-log     { color: #A57CFF; }
+.ts-warn    { color: #FFC878; }
+.ts-error   { color: #FF7A7A; }

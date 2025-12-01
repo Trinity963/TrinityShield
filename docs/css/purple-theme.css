@@ -1,0 +1,167 @@
+/* ---------------------------------------------------
+   TRINITYSHIELD — Purple UI v2
+   Modern Neon / Dark Mode Website Theme
+--------------------------------------------------- */
+
+:root {
+    --purple: #8E5CF6;
+    --purple-light: #A57CFF;
+    --purple-glow: #B68BFF;
+    --purple-dark: #120A20;
+
+    --text-light: #EDE6FF;
+    --text-muted: #BBAED9;
+
+    --bg-dark: #0B0713;
+    --bg-panel: #150B23;
+    --bg-hover: #1F0E33;
+
+    --font-body: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+/* Optional light mode variables */
+.light-mode {
+    --bg-dark: #FAF7FF;
+    --bg-panel: #FFFFFF;
+    --text-light: #2A1450;
+    --text-muted: #5F3C8A;
+    --purple: #7E3CF6;
+    --purple-light: #9B67FF;
+    --purple-dark: #EAE0FF;
+}
+
+/* Global */
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    background: var(--bg-dark);
+    color: var(--text-light);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Glow border + fade-in */
+body {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Banner */
+header .banner {
+    width: 100%;
+    display: block;
+}
+
+/* Navigation Bar */
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    background: var(--purple-dark);
+    padding: 14px;
+    border-bottom: 2px solid var(--purple);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--purple-light);
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+nav a:hover {
+    color: white;
+    text-shadow: 0 0 8px var(--purple);
+}
+
+/* Content */
+.content {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Titles */
+h1, h2, h3 {
+    color: var(--purple-light);
+    text-shadow: 0 0 10px var(--purple-dark);
+}
+
+/* Code Blocks */
+pre {
+    background: var(--bg-panel);
+    padding: 14px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px #00000066;
+    border: 1px solid var(--purple-dark);
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+code {
+    color: var(--purple-light);
+}
+
+/* Syntax Highlight accents */
+.token.keyword { color: #C679FF; }
+.token.string  { color: #FFE58A; }
+.token.number  { color: #FF98A4; }
+
+/* Install Button */
+.install-btn {
+    display: inline-block;
+    background: var(--purple);
+    padding: 14px 24px;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 12px var(--purple-glow);
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.25s ease;
+    margin: 10px 0 20px 0;
+}
+
+.install-btn:hover {
+    background: var(--purple-light);
+    box-shadow: 0 0 16px var(--purple-glow);
+    transform: translateY(-2px);
+}
+
+/* Floating Back to Top button */
+#backToTop {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    background: var(--purple);
+    color: white;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    cursor: pointer;
+    box-shadow: 0 0 12px var(--purple-light);
+    transition: all 0.2s ease;
+}
+
+#backToTop:hover {
+    background: var(--purple-light);
+}
+
+/* Footer */
+footer {
+    margin-top: 60px;
+    text-align: center;
+    padding: 20px;
+    color: var(--purple-light);
+    border-top: 1px solid var(--purple-dark);
+    background: var(--bg-panel);
+}

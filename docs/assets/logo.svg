@@ -1,0 +1,26 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#A57CFF"/>
+      <stop offset="100%" stop-color="#8E5CF6"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feBlend in="SourceGraphic" in2="blur" mode="screen"/>
+    </filter>
+  </defs>
+
+  <rect width="256" height="256" rx="32" fill="#0B0713"/>
+  
+  <path d="M128 20 L210 60 V128 C210 180 170 220 128 236 C86 220 46 180 46 128 V60 Z"
+        fill="url(#grad)"
+        stroke="#B68BFF"
+        stroke-width="6"
+        filter="url(#glow)"/>
+
+  <text x="128" y="150"
+        font-size="70"
+        font-family="Arial Black, sans-serif"
+        fill="white"
+        text-anchor="middle">TS</text>
+</svg>

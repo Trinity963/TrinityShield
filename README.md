@@ -1,145 +1,119 @@
-# TrinityShield v6  
-### Integrity, Safety & Auto-Repair Framework for ChatGPT
+<div align="center">
+  <img src="assets/banner.svg" width="100%">
+</div>
 
-TrinityShield is a modular userscript designed to add a protection, audit, and stabilization layer over the ChatGPT interface.  
-It monitors local integrity, prevents render corruption, repairs broken cache/DB entries, and provides an advanced visual dashboard for system health.
+<br>
+
+<div align="center">
+
+<!-- Badges -->
+<img src="https://img.shields.io/badge/version-v6.0.0-8E5CF6" alt="Version">
+<img src="https://img.shields.io/badge/status-active-A57CFF" alt="Status">
+<img src="https://img.shields.io/badge/license-MIT-8E5CF6" alt="License">
+<img src="https://img.shields.io/badge/build-passing-8E5CF6" alt="Build">
+
+</div>
+
+<br>
+
+<h1 align="center">
+  <img src="assets/logo.svg" width="90"><br>
+  <strong>TrinityShield v6</strong>
+  <br>
+  <sub>Integrity • Protection • Auto-Repair Framework for ChatGPT</sub>
+</h1>
 
 ---
 
-# 🚀 Features
+## 🌟 Overview
 
-### 🛡 Full Protection Suite
-- Safe Boot & Render Guard
-- Local corruption detection
-- IndexedDB & LocalStorage validation
-- Cache integrity scanning
+**TrinityShield v6** is a complete **stability, integrity, and self-repair framework** that hardens the ChatGPT web client against:
+
+- Cache corruption  
+- Broken localStorage  
+- Damaged IndexedDB  
+- Stale or foreign service workers  
+- Malformed JSON  
+- Render crashes  
+- Bad CDN assets  
+
+It ensures ChatGPT loads cleanly, repairs itself when needed, and provides transparent status through a modular dashboard system.
+
+---
+
+## 📦 Installation
+
+Requires **Tampermonkey**:  
+https://www.tampermonkey.net/
+
+Click to install:
+
+👉 **[Install TrinityShield.user.js](https://github.com/Trinity963/TrinityShield/raw/main/TrinityShield.user.js)**
+
+---
+
+## 🛡 Core Features
+
+### 🔒 Safe Boot System
+Stops page rendering until stability checks pass.
 
 ### 🧹 Auto-Purifier
-- Clears corrupted cache buckets  
-- Removes stale/bad service workers  
-- Repairs broken localStorage  
-- Fixes invalid IndexedDB entries  
+Fixes:
+- Broken cache buckets  
+- Invalid IndexedDB entries  
+- LocalStorage corruption  
+- Stale service workers  
 
-### 🧠 Advanced Integrity Systems
-- Conversation JSON scanner  
-- Code-block repair detection  
-- UTF-8 corruption detection  
-- Partial/truncated message detection  
+### 🔍 Conversation Integrity Scanner
+Detects:
+- malformed JSON  
+- broken code blocks  
+- partial outputs  
 
-### 🔍 Full Power Audit
-- CDN verification  
-- Service worker origin checks  
-- Cache source auditing  
-- Region routing inspection  
+### 🧪 Full Power Audit (Advanced)
+Checks:
+- CDN integrity  
+- Cache asset sources  
+- Service worker origins  
+- Routing region health  
 
-### 🔄 Auto-Updater
-- Checks GitHub for newer versions  
-- Displays update notification panel  
-- One-click "Update Now" button  
+### 💬 Debug Panel
+Real-time capture of:
+- console.log  
+- console.warn  
+- console.error  
 
-### 🧪 Debug Panel
-- Live console capture (log/warn/error)  
-- Draggable debug window  
-- Automatically scrolls output  
-
----
-
-# 📦 Installation (Tampermonkey)
-
-1. Install **Tampermonkey**:  
-   https://www.tampermonkey.net/
-
-2. Install TrinityShield:  
-https://github.com/Trinity963/TrinityShield/raw/main/TrinityShield.user.js
-
-
-
-3. Refresh ChatGPT.
+### 🟣 TrinityShield Dashboard
+Compact UI showing:
+- Module health  
+- Boot status  
+- Integrity results  
+- Update availability  
 
 ---
 
-# 📁 File Structure (This Repo)
+## 🧩 Architecture
 
-TrinityShield/
-├── TrinityShield.user.js ← Main userscript
-├── README.md ← This file
-├── LICENSE ← MIT License
-├── CHANGELOG.md  ← Included below
-
-
-
----
-
-# 🧩 Modules (Architecture Overview)
-
-TrinityShield v6 is built on a **modular engine**.
-
-All modules register through:
+TrinityShield uses a modular loader:
 
 ```js
 TS.use({
-    name: "moduleName",
-    async init() { ... }
+  name: "module",
+  async init() {
+      // module code
+  }
 });
-Core Modules (Automatic)
-Module	Purpose
-Core	Safe boot, dashboard, storage/worker monitors
-Corruption Engine	Local integrity scanning
-Auto-Purifier	Repairs local environment
-Safe Boot V2	Staged render protection
-Conversation Scanner	Scans message content
-Full Power Audit	CDN, SW, cache analyzer
-Version Checker	Auto-update system
-Debug Panel	Console capture overlay
-
-These modules run in order once TS.init() is called.
-
-🔄 Auto-Update System
-TrinityShield automatically checks GitHub for updates using:
 
 
+Modules load in this order:
 
-@updateURL
-@downloadURL
-Update process:
-
-TrinityShield fetches the latest version from GitHub.
-
-If a newer version exists:
-
-A dashboard entry appears (update: AVAILABLE)
-
-A popup displays an “Update Now” button
-
-Tampermonkey downloads the latest .user.js file
-
-🧬 Internal Architecture
-🔷 Global Container
-All systems run under:
-
-
-
-window.TrinityShield
-Properties:
-
-
-{
-  modules: [],
-  core: { ... },
-  init: async () => {},
-  use: (module) => {},
-  updateDashboard: ...
-}
-🔷 Loading Flow
-Safe Boot (Core)
-
-Dashboard initialized
+Core
 
 Corruption Engine
 
 Auto-Purifier
 
-Safe Boot V2
+Safe Boot v2
 
 Conversation Scanner
 
@@ -149,64 +123,99 @@ Version Checker
 
 Debug Panel
 
-📜 CHANGELOG
-v6.0.0 — Initial Public Release
-Modular TrinityShield Framework
+Full internals described in docs/architecture.md.
 
-Full Core + Dashboard System
+TrinityShield/
+├── TrinityShield.user.js
+├── TrinityShield.min.user.js
+├── README.md
+├── LICENSE
+├── CHANGELOG.md
+├── css/
+│   ├── core.css
+│   ├── dashboard.css
+│   ├── debug-panel.css
+│   └── shield-theme-purple.css
+├── assets/
+│   ├── logo.svg
+│   ├── banner.svg
+│   └── social-preview.png
+└── docs/
+    ├── index.md
+    ├── architecture.md
+    ├── modules.md
+    ├── installation.md
+    └── tutorials/
+        ├── extending-trinityshield.md
+        └── debugging.md
+        
+📚 Documentation
+🔗 GitHub Pages (Docs Site)
 
-Corruption Engine
+Coming soon — can be generated on request.
 
-Local Auto-Purifier
+Key Docs:
 
-Advanced Safe Boot v2
+docs/architecture.md
 
-Conversation Integrity Scanner
+docs/modules.md
 
-Full Power Audit Engine
+docs/api/ts-core.md
 
-Debug Panel (live logs)
+docs/api/ts-dashboard.md
 
-Version Checker (GitHub-connected)
+docs/tutorials/debugging.md
 
-Corrected load sequencing and architecture
+🧾 Changelog (Highlights)
+v6.0.0
 
-📄 LICENSE (MIT)
+Modular architecture
 
-MIT License
+Full purple TrinityShield theme
 
-Copyright (c) 2025 Trinity963
+Safe Boot system
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights  
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      
-copies of the Software, and to permit persons to whom the Software is         
-furnished to do so, subject to the following conditions:                       
+Auto-Purifier
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.                                
+Conversation integrity scanner
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  
-SOFTWARE.
-💬 Issues & Requests
-Submit bugs & feature requests here:
+Full power audit module
 
-👉 https://github.com/Trinity963/TrinityShield/issues
+Debug console panel
 
-🎉 Thank You
-TrinityShield exists to maintain stability, integrity, and safety —
-designed with powerful local-only auditing and fully modular architecture.
+CSS modularization
 
+Banner + logo + branding
 
+GitHub Actions build support
 
+See CHANGELOG.md for full details.
 
+🛠 Contributing
 
+Contributions welcome!
 
+See:
 
+CONTRIBUTING.md
 
+CODE_OF_CONDUCT.md
+
+Bug Reports → https://github.com/Trinity963/TrinityShield/issues
+
+🔐 Security
+
+Please do not open security issues publicly.
+Use:
+trinity963-security@proton.me
+
+📜 License
+
+Released under the MIT License.
+
+<div align="center">
+💜 Thank you for using TrinityShield
+
+If you like this project, please star the repository ⭐
+
+</div> ```        

@@ -1,0 +1,275 @@
+name: TrinityShield Full CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build, Update & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # -------------------------------------------
+      # Checkout
+      # -------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # -------------------------------------------
+      # Install Node (for minifier + eslint)
+      # -------------------------------------------
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # -------------------------------------------
+      # 1. Auto-bump @version
+      # -------------------------------------------
+      - name: Bump version
+        id: versioning
+        run: |
+          FILE="TrinityShield.user.js"
+          OLD_VERSION=$(grep -oP '(?<=@version\s+)[0-9.]+' "$FILE")
+          IFS='.' read -r major minor patch <<< "$OLD_VERSION"
+          NEW_VERSION="$major.$minor.$((patch+1))"
+
+          sed -i "s/@version.*/@version      $NEW_VERSION/" "$FILE"
+
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Version bumped: $OLD_VERSION → $NEW_VERSION"
+
+      # -------------------------------------------
+      # 2. Minify script → TrinityShield.min.user.js
+      # -------------------------------------------
+      - name: Create minified userscript
+        run: |
+          npm install terser --silent
+          npx terser TrinityShield.user.js -c -m -o TrinityShield.min.user.js
+          echo "Minified version generated."
+
+      # -------------------------------------------
+      # 3. Update metadata URLs inside user script
+      # -------------------------------------------
+      - name: Update metadata URLs
+        run: |
+          RAW_URL="https://raw.githubusercontent.com/${{ github.repository }}/main/TrinityShield.user.js"
+          RAW_MIN_URL="https://raw.githubusercontent.com/${{ github.repository }}/main/TrinityShield.min.user.js"
+
+          sed -i "s|@updateURL.*|@updateURL   $RAW_URL|" TrinityShield.user.js
+          sed -i "s|@downloadURL.*|@downloadURL $RAW_MIN_URL|" TrinityShield.user.js
+
+      # -------------------------------------------
+      # 4. Update CHANGELOG.md
+      # -------------------------------------------
+      - name: Update CHANGELOG.md
+        run: |
+          VERSION="${{ steps.versioning.outputs.new_version }}"
+          echo "## v$VERSION - $(date +'%Y-%m-%d')" >> CHANGELOG.md
+          git log -1 --pretty=format:"- %s" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+
+      # -------------------------------------------
+      # 5. Update README Script Size Badge
+      # -------------------------------------------
+      - name: Update size badge in README
+        run: |
+          SIZE=$(wc -c < TrinityShield.min.user.js)
+          BADGE_URL="https://img.shields.io/badge/minified-${SIZE}b-8E5CF6"
+          sed -i "s|!\[size\].*|![size]($BADGE_URL)|" README.md || true
+
+      # -------------------------------------------
+      # 6. Lint the userscript
+      # -------------------------------------------
+      - name: Run ESLint
+        run: |
+          npm install eslint --silent
+          npx eslint TrinityShield.user.js || true
+
+      # -------------------------------------------
+      # 7. Create SHA256 Integrity Hash
+      # -------------------------------------------
+      - name: Generate SHA256 hash
+        run: |
+          sha256sum TrinityShield.min.user.js > TrinityShield.min.user.js.sha256
+          echo "SHA256 hash generated."
+
+      # -------------------------------------------
+      # 8. Generate Diff Report
+      # -------------------------------------------
+      - name: Generate diff report
+        run: |
+          git diff HEAD~1 HEAD > diff-latest.txt || true
+
+      # -------------------------------------------
+      # 9. Commit updated files
+      # -------------------------------------------
+      - name: Commit updated script + assets
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          git add TrinityShield.user.js TrinityShield.min.user.js CHANGELOG.md README.md *.sha256 diff-latest.txt || true
+          git commit -m "Auto-update: v${{ steps.versioning.outputs.new_version }}" || echo "No changes to commit."
+
+      # -------------------------------------------
+      # 10. Push changes
+      # -------------------------------------------
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      # -------------------------------------------
+      # 11. Create Release (auto-release-notes enabled)
+      # -------------------------------------------
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.versioning.outputs.new_version }}
+          name: TrinityShield v${{ steps.versioning.outputs.new_version }}
+          generate_release_notes: true
+          files: |
+            TrinityShield.user.js
+            TrinityShield.min.user.js
+            TrinityShield.min.user.js.sha256
+            diff-latest.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # -------------------------------------------
+      # 12. Deploy documentation (GitHub Pages)
+      # -------------------------------------------
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload docs artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
+
+      # -------------------------------------------
+      # 13. Optional Discord Notification
+      # -------------------------------------------
+      - name: Notify Discord
+        if: always() && secrets.DISCORD_WEBHOOK != ''
+        run: |
+          STATUS="${{ job.status }}"
+          VERSION="${
+
+      # -------------------------------------------
+      # SECURITY MODULE — ENTERPRISE LEVEL
+      # -------------------------------------------
+
+      # 1. Generate SHA256 + SHA512 hashes
+      - name: Generate SHA256 + SHA512
+        run: |
+          sha256sum TrinityShield.min.user.js > TrinityShield.min.user.js.sha256
+          sha512sum TrinityShield.min.user.js > TrinityShield.min.user.js.sha512
+          echo "Generated SHA checksums."
+
+      # 2. Supply chain / dependency security scan
+      - name: Install npm audit tool
+        run: npm install --silent
+
+      - name: Run npm audit security scan
+        run: |
+          npm audit --production || true
+
+      # 3. Run static analysis (CodeQL-compatible)
+      - name: Static analysis: pattern scanning
+        run: |
+          grep -RIn "eval(" TrinityShield.user.js && echo "WARNING: eval detected" || true
+          grep -RIn "innerHTML" TrinityShield.user.js || true
+          grep -RIn "Function(" TrinityShield.user.js || true
+
+      # 4. GPG signing (optional — requires secrets)
+      - name: GPG sign minified script
+        if: env.GPG_PRIVATE_KEY != ''
+        run: |
+          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
+          gpg --batch --import private.key
+          gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" \
+              -o TrinityShield.min.user.js.sig --sign TrinityShield.min.user.js
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE:   ${{ secrets.GPG_PASSPHRASE }}
+
+      # 5. Integrity Attestation
+      - name: Create attestation file
+        run: |
+          echo "Build: $GITHUB_RUN_ID" > integrity.txt
+          echo "Timestamp: $(date)" >> integrity.txt
+          echo "Version: ${{ steps.versioning.outputs.new_version }}" >> integrity.txt
+          echo "SHA256:" >> integrity.txt
+          cat TrinityShield.min.user.js.sha256 >> integrity.txt
+          echo "SHA512:" >> integrity.txt
+          cat TrinityShield.min.user.js.sha512 >> integrity.txt
+      # -------------------------------------------
+      # PERFORMANCE MODULE — ENTERPRISE LEVEL
+      # -------------------------------------------
+
+      # 1. Bundle Analyzer — count lines, bytes, compression delta
+      - name: Analyze bundle
+        run: |
+          ORIGINAL_SIZE=$(wc -c < TrinityShield.user.js)
+          MIN_SIZE=$(wc -c < TrinityShield.min.user.js)
+          DELTA=$((ORIGINAL_SIZE - MIN_SIZE))
+
+          echo "Original size: ${ORIGINAL_SIZE} bytes"
+          echo "Minified size: ${MIN_SIZE} bytes"
+          echo "Saved: ${DELTA} bytes" > bundle-report.txt
+
+          echo "" >> bundle-report.txt
+          echo "==== Minification Stats ====" >> bundle-report.txt
+          echo "Original: ${ORIGINAL_SIZE}" >> bundle-report.txt
+          echo "Minified: ${MIN_SIZE}" >> bundle-report.txt
+          echo "Delta:    ${DELTA}" >> bundle-report.txt
+
+      # 2. Dead Code Detector (regex-based)
+      - name: Dead code scanner
+        run: |
+          echo "=== Potential Dead Code ===" > deadcode-report.txt
+          grep -RIn "function .*{" TrinityShield.user.js > all_functions.txt
+          grep -RIn "TS\." TrinityShield.user.js > ts_usage.txt
+
+          # Look for functions not referenced by TS modules
+          while read -r fn; do
+            NAME=$(echo "$fn" | sed -n 's/.*function \(.*\)(.*/\1/p')
+            if ! grep -q "$NAME" TrinityShield.user.js; then
+              echo "Possibly unused: $NAME" >> deadcode-report.txt
+            fi
+          done < all_functions.txt || true
+
+      # 3. Complexity Analysis — cyclomatic complexity warning
+      - name: Complexity check
+        run: |
+          echo "=== Complexity Report ===" > complexity-report.txt
+          grep -RIn "if\|for\|while\|switch" TrinityShield.user.js >> complexity-report.txt
+
+      # 4. DOM Performance Analyzer — detect slow selectors
+      - name: DOM Performance Scanner
+        run: |
+          echo "=== DOM Performance Warnings ===" > dom-performance.txt
+          grep -RIn "querySelectorAll" TrinityShield.user.js && echo "Warning: querySelectorAll can be expensive" >> dom-performance.txt || true
+          grep -RIn "offsetHeight" TrinityShield.user.js && echo "Warning: offsetHeight triggers layout reflow" >> dom-performance.txt || true
+          grep -RIn "innerHTML" TrinityShield.user.js && echo "Warning: innerHTML can be unsafe/slow" >> dom-performance.txt || true
+
+      # 5. Expensive Loops Detector
+      - name: Loop hot-spot scan
+        run: |
+          echo "=== Loop Analysis ===" > loop-analysis.txt
+          grep -RIn "for (" TrinityShield.user.js >> loop-analysis.txt
+          grep -RIn "while (" TrinityShield.user.js >> loop-analysis.txt
+          grep -RIn "forEach" TrinityShield.user.js >> loop-analysis.txt
+
+      # 6. Save all performance reports to release artifacts
+      - name: Save performance reports
+        run: |
+          mkdir -p perf
+          mv *.txt perf/ || true

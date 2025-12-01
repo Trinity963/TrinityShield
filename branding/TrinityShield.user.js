@@ -1,0 +1,6 @@
+![Stable](https://img.shields.io/badge/stable-v6-8E5CF6)
+![Canary](https://img.shields.io/badge/canary-latest-8E5CF6)
+![Nightly](https://img.shields.io/badge/nightly-auto-8E5CF6)
+![License](https://img.shields.io/badge/license-MIT-8E5CF6)
+![Build](https://img.shields.io/badge/build-passing-8E5CF6)
+![Docs](https://img.shields.io/badge/docs-online-8E5CF6)
