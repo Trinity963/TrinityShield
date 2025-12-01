@@ -6,9 +6,9 @@
 // @author       Trinity963
 // @license      MIT
 // @homepage     https://github.com/Trinity963/TrinityBrowseSe
-// @homepage    https://github.com/Trinity963/TrinityShield
+// @homepage     https://github.com/Trinity963/TrinityShield
 // @supportURL   https://github.com/Trinity963/TrinityBrowseSe/issues
-// @updateURL   https://github.com/Trinity963/TrinityShield/raw/main/TrinityShield.user.js
+// @updateURL    https://github.com/Trinity963/TrinityShield/raw/main/TrinityShield.user.js
 // @downloadURL  https://github.com/Trinity963/TrinityBrowseSe/raw/main/TrinityShield.user.js
 // @match        https://chatgpt.com/*
 // @grant        GM_info
