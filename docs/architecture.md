@@ -1,71 +1,79 @@
-# TrinityShield Architecture
+---
+layout: default
+title: TrinityShield Architecture
+---
 
-## Global Root Object
-TrinityShield attaches to `window.TrinityShield`:
+# 🏛️ TrinityShield Architecture
+
+TrinityShield uses a modular boot architecture.  
+Each module registers with the global TS root object and initializes in a predictable order.
+
+---
+
+## 🔧 Global Root Object
+
+TrinityShield attaches to:
 
 ```js
-TS = {
+window.TrinityShield = {
   modules: [],
   use(module) {},
   init() {},
   updateDashboard() {}
-}
-Module Registration
+};
+```
 
-TS.use({ name:"m", init(){ ... } })
-Modules load in this order:
+Module registration:
 
-1.core
-
-2.corruptionEngine
-
-3.autoPurifier
-
-4.safeBootV2
-
-5.conversationScanner
-
-6.fullPowerAudit
-
-6.versionChecker
-
-8.debugPanel
-
-Data Flow
-Modules do not depend on each other except safeBootV2 → autoPurifier.
-
-Safety
-No external fetch except version check
-No eval
-No DOM injection outside TS-managed elements
-
-
+```js
+TS.use({
+  name: "moduleName",
+  async init() {
+    // module startup logic
+  }
+});
+```
 
 ---
 
-# ⭐ **6. CHANGELOG.md (clean version)**
+## 🔢 Boot Order
 
-```md
-# TrinityShield Changelog
+Modules load in this order:
 
-## v6.0.0
-- TrinityShield modular framework created
-- Safe Boot system
-- Corruption detection engine
-- Local auto-purifier (v2)
-- Conversation integrity scanner
-- Full-power audit system
-- Debug panel with console hook
-- Version checker with GitHub integration
-- Dashboard redesign
+1. **core**
+2. **corruptionEngine**
+3. **autoPurifier**
+4. **safeBootV2**
+5. **conversationScanner**
+6. **fullPowerAudit**
+7. **versionChecker**
+8. **debugPanel**
 
+---
 
+## 🔄 Data Flow
 
+- Each module is independent  
+- No module mutates another  
+- `safeBootV2` depends on output from `autoPurifier`  
+- Core initializes system environment and dashboard  
 
-🧠 TrinityShield Architecture
+---
 
-TrinityShield uses a modular boot architecture:
+## 🛡️ Safety Guarantees
 
+- No external fetch (except version check)  
+- No `eval` or dynamic code execution  
+- No DOM injection outside TS-managed regions  
+- Local-only corruption scanning  
+- Non-destructive auto-repair  
+- Safe, idempotent boot stages  
+
+---
+
+## 🧠 Architecture Overview Diagram
+
+```text
 Core
 ├── Safe Boot
 ├── Dashboard
@@ -73,29 +81,8 @@ Core
 ├── Auto-Purifier
 ├── Conversation Scanner
 └── Full Power Audit
-
-
-
-Modules register with:
-
-```js
-TS.use({
-  name: "moduleName",
-  init() { ... }
-});
-
+```
 
 ---
 
-# ⭐ PART 7 — VERSIONED DOCS SYSTEM
 
-`docs/versions/6.x/index.md`:
-
-```md
-# TrinityShield v6.x Documentation
-
-This directory contains documentation for:
-
-- v6.0.0
-- v6.1.0
-- v6.2.0 (nightly builds)
