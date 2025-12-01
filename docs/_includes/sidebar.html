@@ -1,0 +1,5 @@
+<nav class="sidebar-nav">
+  {% for item in site.data.sidebar %}
+    <a href="{{ item.url }}">{{ item.name }}</a>
+  {% endfor %}
+</nav>

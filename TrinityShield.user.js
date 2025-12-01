@@ -58,6 +58,25 @@ if (!window.TrinityShield) {
 }
 
 const TS = window.TrinityShield;
+TS.use({
+    name: "selfCleaner",
+
+    async init() {
+        const existing = window.__TS_RUNNING__ || 0;
+
+        if (existing >= 1) {
+            console.warn("[TrinityShield] Duplicate instance detected. This version will auto-disable.");
+            TS.updateDashboard("status", "DUPLICATE BLOCKED");
+
+            // Stop modules from continuing
+            throw new Error("Duplicate TrinityShield instance blocked");
+        }
+
+        window.__TS_RUNNING__ = existing + 1;
+        console.log("[TrinityShield] Self-cleaner active: OK");
+    }
+});
+
 
 // ---- LOAD CSS globally ----
 function TS_loadCSS(file) {
@@ -67,6 +86,139 @@ function TS_loadCSS(file) {
     link.href = url;
     document.head.appendChild(link);
 }
+TS.use({
+    name: "versionManager",
+
+    registry: {},
+    activeVersion: null,
+
+    async init() {
+        console.log("[TSv6 VM] Version Manager initialized");
+    },
+
+    register(name, loader) {
+        this.registry[name] = loader;
+        console.log("[TSv6 VM] Registered version:", name);
+    },
+
+    async load(name) {
+        if (!this.registry[name]) {
+            console.warn("[TSv6 VM] Version not found:", name);
+            return false;
+        }
+
+        console.log("[TSv6 VM] Loading version:", name);
+
+        // Clear previous version classes
+        this.cleanUI();
+
+        // Run loader
+        await this.registry[name]();
+
+        this.activeVersion = name;
+        TS.updateDashboard("menu-version", name);
+
+        return true;
+    },
+
+    cleanUI() {
+        const dashboard = document.getElementById("ts-dashboard");
+        const debug = document.getElementById("ts-debug");
+
+        if (!dashboard && !debug) return;
+
+        const classes = [
+            // v1
+            "ts-hover-v1",
+            // v2
+            "ts-autofade-v2",
+            "ts-faded-v2",
+            // v3
+            "ts-hidden-v3",
+            // v4
+            "ts-ghostfade-v4",
+            "ts-ghosted-v4"
+        ];
+
+        [dashboard, debug].forEach(el => {
+            if (!el) return;
+            classes.forEach(c => el.classList.remove(c));
+        });
+    },
+
+    list() {
+        return Object.keys(this.registry);
+    }
+});
+TS.use({
+    name: "versionLoader",
+
+    base: "https://raw.githubusercontent.com/Trinity963/TrinityShield/main/modules/menu/",
+
+
+    async init() {
+        console.log("[TSv6 VM] Loader ready.");
+    },
+
+    async require(path) {
+        return new Promise((resolve, reject) => {
+            const s = document.createElement("script");
+            s.src = this.base + path + "?nocache=" + Date.now();
+            s.onload = () => resolve(true);
+            s.onerror = e => reject(e);
+            document.head.appendChild(s);
+        });
+    }
+});
+TS.use({
+    name: "versionRegistration",
+
+    async init() {
+        const VM = TS.versionManager;
+        const VL = TS.versionLoader;
+
+        VM.register("hover-v1", async () => {
+            await VL.require("hover/v1.js");
+        });
+
+        VM.register("autofade-v2", async () => {
+            await VL.require("autofade/v2.js");
+        });
+
+        VM.register("toggle-v3", async () => {
+            await VL.require("toggle/v3.js");
+        });
+
+        VM.register("ghost-v4", async () => {
+            await VL.require("ghost/v4.js");
+        });
+
+        console.log("[TSv6 VM] All versions registered.");
+
+        // Load default version:
+        VM.load("hover-v1");
+    }
+});
+TS.use({
+    name: "versionHotkeys",
+
+    async init() {
+        const VM = TS.versionManager;
+
+        window.addEventListener("keydown", (e) => {
+            if (!e.ctrlKey || !e.altKey) return;
+
+            switch (e.key) {
+                case "1": VM.load("hover-v1"); break;
+                case "2": VM.load("autofade-v2"); break;
+                case "3": VM.load("toggle-v3"); break;
+                case "4": VM.load("ghost-v4"); break;
+            }
+        });
+
+        console.log("[TSv6 VM] Hotkeys active (Ctrl+Alt+1-4)");
+    }
+});
 
 // Load all theme CSS
 TS_loadCSS("core.css");

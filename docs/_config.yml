@@ -1,20 +1,22 @@
 theme: minima
-markdown: GFM
+markdown: kramdown
+
 plugins:
+  - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-sitemap
+
+exclude:
+  - node_modules
+  - devkit
+  - scripts
 
 include:
-  - sidebar.md
-  - api.md
-  - modules/
-  - generated-index.md
-
-sass:
-  style: compressed
+  - _layouts
+  - _includes
 
 defaults:
   - scope:
       path: ""
     values:
       layout: default
-      custom_css: /docs/css/purple-docs.css
