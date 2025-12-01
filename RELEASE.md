@@ -67,3 +67,15 @@ Safe-boot changes
 - Canary → continuous  
 - Nightly → daily  
 - Hotfix → as needed  
+
+## ⚠️ Deprecation Notice — `versions/` Folder
+
+The old `versions/` folder is no longer part of the TrinityShield runtime.
+
+It has been replaced by the new modular structure:
+
+modules/menu/<module>/<version>.js
+
+You may safely delete the `versions/` folder.  
+The Version Manager and Loader do not reference it.
+

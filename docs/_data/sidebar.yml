@@ -1,5 +1,23 @@
-<nav class="sidebar-nav">
-  {% for item in site.data.sidebar %}
-    <a href="{{ item.url }}">{{ item.name }}</a>
-  {% endfor %}
-</nav>
+- name: Home
+  url: /
+
+- name: Quickstart
+  url: /guide/quickstart
+
+- name: Installation
+  url: /pages/installation
+
+- name: Modules
+  url: /modules
+
+- name: Modules Overview
+  url: /modules-overview
+
+- name: Debugging
+  url: /pages/debugging
+
+- name: Architecture
+  url: /architecture
+
+- name: Releases
+  url: /releases/stable

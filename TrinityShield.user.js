@@ -447,9 +447,59 @@ TS.use({
         keys.forEach(k => console.log("[M6] Cache bucket:", k));
     }
 });
+
 // Boot after page loads
 setTimeout(() => TS.init(), 200);
 })();
+TS.use({
+    name: "strayFolderDetector",
+
+    async init() {
+        const stray = [
+            "versions/",
+            "old/",
+            "legacy/",
+            "deprecated/",
+            "modules/old/",
+            "modules/legacy/"
+        ];
+
+        const found = [];
+
+        stray.forEach(folder => {
+            const match = document.querySelector(`[src*="${folder}"]`);
+            if (match) found.push(folder);
+        });
+
+        if (found.length > 0) {
+            console.warn("[TrinityShield] Stray folders detected:", found);
+            TS.updateDashboard("stray-folders", found.join(", "));
+            this.popup(found);
+        }
+    },
+
+    popup(list) {
+        const el = document.createElement("div");
+        el.style = `
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 15px;
+            background: #310;
+            color: #fff;
+            z-index: 999999;
+            border-radius: 8px;
+            font-size: 14px;
+        `;
+        el.innerHTML = `
+            <b>TrinityShield Warning</b><br><br>
+            Deprecated folders detected:<br>
+            ${list.join("<br>")}<br><br>
+            These are safe to remove.
+        `;
+        document.body.appendChild(el);
+    }
+});
 
 TS.use({
     name: "versionChecker",
