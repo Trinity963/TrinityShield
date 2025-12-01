@@ -149,6 +149,106 @@ TrinityShield/
         ├── extending-trinityshield.md
         └── debugging.md
         
+ ## 🎛️ Version Manager System (New in v6.1)
+
+TrinityShield now includes a modular **Version Manager** that allows dynamic switching between different UI behavior profiles for the dashboard and debug panel.  
+Each UI mode is stored separately inside the repository under `modules/menu/`, making the system clean, extensible, and user-friendly.
+
+### ✨ Features
+- Switch between UI versions instantly (no page reload)
+- Four built-in UI modes (Hover, Auto-Fade, Toggle, Ghost-Fade)
+- Hotkey support for fast switching
+- Dashboard automatically updates showing active version
+- Version modules hosted directly in the GitHub repo
+- Fully isolated modules with automatic cleanup
+
+---
+
+## 📁 Version Folder Structure
+
+TrinityShield/
+└── modules/
+└── menu/
+├── hover/
+│ └── v1.js
+├── autofade/
+│ └── v2.js
+├── toggle/
+│ └── v3.js
+└── ghost/
+└── v4.js
+ 
+ 
+Each subfolder contains one UI behavior module.
+
+---
+
+## 🔄 Built-In Versions
+
+### **v1 — Hover Reveal**
+The dashboard and debug panel stay lightly faded and become fully visible on hover.
+
+### **v2 — Auto Fade**
+UI is fully visible at first, then gently fades after inactivity.  
+Hover or click resets visibility.
+
+### **v3 — Toggle Button**
+Adds a small floating ⚡ button to hide/show both UI panels on demand.
+
+### **v4 — Ghost Fade (Click)**
+Click the dashboard or debug panel to toggle ghost opacity mode.
+
+---
+
+## ⌨️ Hotkeys
+
+| Hotkey             | Loads Version      |
+|--------------------|-------------------|
+| **Ctrl + Alt + 1** | Hover Reveal (v1) |
+| **Ctrl + Alt + 2** | Auto Fade (v2)    |
+| **Ctrl + Alt + 3** | Toggle UI (v3)    |
+| **Ctrl + Alt + 4** | Ghost Fade (v4)   |
+
+---
+
+## 🧩 How the Version Manager Works
+
+The manager dynamically loads UI modules from your GitHub repo:
+
+```js
+TS.versionManager.load("hover-v1");
+
+ https://raw.githubusercontent.com/<username>/<repo>/main/modules/menu/<folder>/<file>.js
+
+ 🛠 Creating Your Own Versions
+
+Add a new folder:
+
+modules/menu/<your-name>/
+
+
+Add your script:
+
+modules/menu/<your-name>/v1.js
+
+
+Register it in the userscript:
+
+TS.versionManager.register("myVersion", async () => {
+    await TS.versionLoader.require("my-name/v1.js");
+});
+
+
+Now your new version can be loaded via:
+
+TS.versionManager.load("myVersion");
+
+
+---
+
+
+ 
+        
 📚 Documentation
 🔗 GitHub Pages (Docs Site)
 
@@ -218,4 +318,5 @@ Released under the MIT License.
 
 If you like this project, please star the repository ⭐
 
-</div> ```        
+</div> ```
+        
