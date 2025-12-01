@@ -3,26 +3,26 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ page.title }} | TrinityShield</title>
 
-    <!-- Global Purple Stylesheet -->
+    {% seo %}
+
+    <!-- Load global purple UI -->
     <link rel="stylesheet" href="{{ '/css/purple.css' | relative_url }}">
 
-
-    {%- seo -%}
+    <title>{{ page.title }} | TrinityShield Documentation</title>
 </head>
 
 <body>
 
 <header class="ts-header">
     <div class="ts-header-title">
-        <a href="/TrinityShield/">TrinityShield</a>
+        <a href="{{ '/' | relative_url }}">TrinityShield</a>
     </div>
 </header>
 
-<div class="ts-container">
+<main class="ts-container">
     {{ content }}
-</div>
+</main>
 
 <footer class="ts-footer">
     © {{ site.time | date: '%Y' }} TrinityShield — Documentation Portal
