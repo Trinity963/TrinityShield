@@ -7,10 +7,9 @@
     <title>{{ page.title }} | TrinityShield Documentation</title>
 
     <!-- TrinityShield Global Styles -->
-    <link rel="stylesheet" href="/TrinityShield/docs/css/purple.css">
-    <link rel="stylesheet" href="/TrinityShield/docs/css/core.css">
-    <link rel="stylesheet" href="/TrinityShield/docs/css/docs-ui.css">
-
+    <link rel="stylesheet" href="{{ site.baseurl }}/css/purple.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/css/core.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/css/docs-ui.css">
 
     {% seo %}
 </head>
@@ -22,7 +21,7 @@
 =========================== -->
 <header class="ts-topnav">
     <div class="ts-topnav-left">
-        <a class="ts-logo" href="/TrinityShield/">TrinityShield</a>
+        <a class="ts-logo" href="{{ site.baseurl }}/">TrinityShield</a>
 
         <select id="ts-version-selector" class="ts-version-selector"></select>
     </div>
@@ -42,24 +41,23 @@
 =========================== -->
 <div class="ts-layout">
 
-
     <!-- LEFT SIDEBAR -->
     <aside id="ts-sidebar" class="ts-sidebar">
         <nav>
             <ul>
-                <li><a href="/TrinityShield/install">Installation</a></li>
-                <li><a href="/TrinityShield/guide/quickstart">Quickstart</a></li>
-                <li><a href="/TrinityShield/architecture">Architecture</a></li>
-                <li><a href="/TrinityShield/modules">Modules</a></li>
-                <li><a href="/TrinityShield/debugging">Diagnostics</a></li>
-                <li><a href="/TrinityShield/monitoring">Monitoring</a></li>
+                <li><a href="{{ site.baseurl }}/installation">Installation</a></li>
+                <li><a href="{{ site.baseurl }}/quickstart">Quickstart</a></li>
+                <li><a href="{{ site.baseurl }}/architecture">Architecture</a></li>
+                <li><a href="{{ site.baseurl }}/modules">Modules</a></li>
+                <li><a href="{{ site.baseurl }}/debugging">Diagnostics</a></li>
+                <li><a href="{{ site.baseurl }}/monitoring">Monitoring</a></li>
 
                 <li class="ts-divider"></li>
 
-                <li><a href="/TrinityShield/api/ts-core">API: Core</a></li>
-                <li><a href="/TrinityShield/api/modules-api">API: Modules</a></li>
-                <li><a href="/TrinityShield/api/version-manager">API: Version Manager</a></li>
-                <li><a href="/TrinityShield/api/storage-api">API: Storage</a></li>
+                <li><a href="{{ site.baseurl }}/api/ts-core">API: Core</a></li>
+                <li><a href="{{ site.baseurl }}/api/modules-api">API: Modules</a></li>
+                <li><a href="{{ site.baseurl }}/api/version-manager">API: Version Manager</a></li>
+                <li><a href="{{ site.baseurl }}/api/storage-api">API: Storage</a></li>
             </ul>
         </nav>
     </aside>
@@ -69,7 +67,6 @@
     <main class="ts-content">
         {{ content }}
     </main>
-
 
     <!-- RIGHT TABLE OF CONTENTS -->
     <aside class="ts-toc" id="ts-toc"></aside>
@@ -84,7 +81,7 @@
 
 
 <!-- JavaScript -->
-<script src="/TrinityShield/js/docs-ui.js"></script>
+<script src="{{ site.baseurl }}/js/docs-ui.js"></script>
 
 </body>
 </html>
