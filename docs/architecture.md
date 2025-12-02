@@ -1,6 +1,7 @@
 ---
 layout: default
 title: TrinityShield Architecture
+permalink: /architecture/
 ---
 
 # 🏛️ TrinityShield Architecture
