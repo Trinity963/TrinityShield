@@ -4,29 +4,87 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    {% seo %}
-
-    <!-- Load global purple UI -->
-    <link rel="stylesheet" href="{{ '/css/purple.css' | relative_url }}">
-
     <title>{{ page.title }} | TrinityShield Documentation</title>
+
+    <!-- TrinityShield Global Styles -->
+    <link rel="stylesheet" href="/TrinityShield/docs/css/purple.css">
+    <link rel="stylesheet" href="/TrinityShield/docs/css/core.css">
+    <link rel="stylesheet" href="/TrinityShield/docs/css/docs-ui.css">
+
+
+    {% seo %}
 </head>
 
-<body>
+<body class="ts-body">
 
-<header class="ts-header">
-    <div class="ts-header-title">
-        <a href="{{ '/' | relative_url }}">TrinityShield</a>
+<!-- ==========================
+     TOP NAVIGATION BAR
+=========================== -->
+<header class="ts-topnav">
+    <div class="ts-topnav-left">
+        <a class="ts-logo" href="/TrinityShield/">TrinityShield</a>
+
+        <select id="ts-version-selector" class="ts-version-selector"></select>
+    </div>
+
+    <div class="ts-topnav-right">
+        <input class="ts-search" id="ts-search-input" type="text" placeholder="Search…">
+
+        <button id="ts-darkmode-toggle" class="ts-dark-toggle">☾</button>
+
+        <button class="ts-mobile-toggle" onclick="TSUI.toggleSidebar()">☰</button>
     </div>
 </header>
 
-<main class="ts-container">
-    {{ content }}
-</main>
 
+<!-- ==========================
+     MAIN LAYOUT
+=========================== -->
+<div class="ts-layout">
+
+
+    <!-- LEFT SIDEBAR -->
+    <aside id="ts-sidebar" class="ts-sidebar">
+        <nav>
+            <ul>
+                <li><a href="/TrinityShield/install">Installation</a></li>
+                <li><a href="/TrinityShield/guide/quickstart">Quickstart</a></li>
+                <li><a href="/TrinityShield/architecture">Architecture</a></li>
+                <li><a href="/TrinityShield/modules">Modules</a></li>
+                <li><a href="/TrinityShield/debugging">Diagnostics</a></li>
+                <li><a href="/TrinityShield/monitoring">Monitoring</a></li>
+
+                <li class="ts-divider"></li>
+
+                <li><a href="/TrinityShield/api/ts-core">API: Core</a></li>
+                <li><a href="/TrinityShield/api/modules-api">API: Modules</a></li>
+                <li><a href="/TrinityShield/api/version-manager">API: Version Manager</a></li>
+                <li><a href="/TrinityShield/api/storage-api">API: Storage</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="ts-content">
+        {{ content }}
+    </main>
+
+
+    <!-- RIGHT TABLE OF CONTENTS -->
+    <aside class="ts-toc" id="ts-toc"></aside>
+
+</div>
+
+
+<!-- FOOTER -->
 <footer class="ts-footer">
-    © {{ site.time | date: '%Y' }} TrinityShield — Documentation Portal
+    © {{ site.time | date: '%Y' }} TrinityShield Documentation
 </footer>
+
+
+<!-- JavaScript -->
+<script src="/TrinityShield/js/docs-ui.js"></script>
 
 </body>
 </html>
