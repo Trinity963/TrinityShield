@@ -1,0 +1,47 @@
+# ------------------------------
+# TrinityShield Documentation Site
+# ------------------------------
+
+title: "TrinityShield Documentation"
+description: "Integrity Guardian System for ChatGPT"
+url: "https://trinity963.github.io"
+baseurl: "/TrinityShield"
+
+# Enable GitHub Pages defaults
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+theme: minima   # (ignored because we override layouts)
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-feed
+
+# Permalink handling
+permalink: pretty
+
+# Include folders used for documentation
+include:
+  - _layouts
+  - _includes
+  - pages
+  - api
+  - css
+
+# Exclude items not used in production
+exclude:
+  - node_modules
+  - vendor
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - LICENSE
+
+# SEO
+seo:
+  type: "WebSite"
+  name: "TrinityShield Docs"
+  twitter:
+    username: "Trinity963"
