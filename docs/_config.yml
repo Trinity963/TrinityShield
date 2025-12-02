@@ -3,12 +3,11 @@ description: Official documentation portal for TrinityShield.
 
 
 url: "https://trinity963.github.io"
-baseurl: "/TrinityShield"   
+baseurl: "/TrinityShield"
 
 markdown: kramdown
 kramdown:
   input: GFM
-
 
 include:
   - docs
@@ -22,7 +21,6 @@ include:
   - docs/releases
   - docs/tutorials
 
-
 exclude:
   - node_modules
   - "*.sh"
@@ -31,13 +29,13 @@ exclude:
   - package-lock.json
   - .venv/
 
-
 collections:
   pages:
     output: true
+    permalink: /:name/
 
 defaults:
   - scope:
-      path: ""
+      path: "pages"
     values:
       layout: default
