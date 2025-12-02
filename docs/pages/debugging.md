@@ -1,8 +1,10 @@
 
 ---
-layout: default
 title: Debugging
+layout: default
+permalink: /debugging
 ---
+
 
 <!-- your existing HTML begins below -->
 

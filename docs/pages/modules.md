@@ -1,6 +1,7 @@
 ---
+title: Modules
 layout: default
-title: Changelog
+permalink: /modules
 ---
 
 <!-- your existing HTML begins below -->
@@ -9,7 +10,7 @@ title: Changelog
 
 
 <meta charset="UTF-8">
-<title>Changelog – TrinityShield</title>
+<title>Modules – TrinityShield</title>
 <link rel="stylesheet" href="../css/purple-theme.css">
 
 
@@ -17,26 +18,28 @@ title: Changelog
 <nav>
     <a href="../index.html">Home</a>
     <a href="installation.html">Installation</a>
-    <a href="modules.html">Modules</a>
+    <a href="modules.html" class="active">Modules</a>
     <a href="architecture.html">Architecture</a>
     <a href="debugging.html">Debugging</a>
-    <a href="changelog.html" class="active">Changelog</a>
+    <a href="changelog.html">Changelog</a>
     <button id="themeToggle">☾</button>
 
 </nav>
 
 <div class="content">
 
-<h1>Changelog</h1>
+<h1>Modules Overview</h1>
 
-<h3>v6.0.0</h3>
+<p>TrinityShield is built using a modular architecture:</p>
+
 <ul>
-    <li>Modular architecture</li>
-    <li>Safe Boot v2</li>
-    <li>Auto-Purifier</li>
-    <li>Debug Panel</li>
-    <li>Full Power Audit</li>
-    <li>Purple Theme UI</li>
+  <li><strong>Core</strong> – Boot pipeline, dashboard</li>
+  <li><strong>Corruption Engine</strong> – Cache/JSON/IDB scans</li>
+  <li><strong>Auto-Purifier</strong> – Repairs corrupted local data</li>
+  <li><strong>Safe Boot V2</strong> – Staged validation system</li>
+  <li><strong>Conversation Scanner</strong> – Output stability</li>
+  <li><strong>Full Power Audit</strong> – CDN, SW, routing inspections</li>
+  <li><strong>Debug Panel</strong> – Console capture</li>
 </ul>
 
 </div>

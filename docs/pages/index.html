@@ -1,83 +1,52 @@
----
-layout: default
-title: Section Index
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TrinityShield Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- your existing HTML begins below -->
+    <link rel="stylesheet" href="/TrinityShield/css/purple.css">
+    <link rel="stylesheet" href="/TrinityShield/css/core.css">
+</head>
+<body>
 
+<div class="content">
+    <h1>Welcome to the official TrinityShield documentation portal.</h1>
 
-<
-
-<meta charset="UTF-8">
-<title>TrinityShield v6 – Integrity & Protection Framework</title>
-<link rel="stylesheet" href="../css/purple-theme.css">
-
-
-
-<header>
-    <img src="assets/banner.svg" class="banner">
-</header>
-
-<nav>
-    <a href="index.html">Home</a>
-    <a href="pages/installation.html">Installation</a>
-    <a href="pages/modules.html">Modules</a>
-    <a href="pages/architecture.html">Architecture</a>
-    <a href="pages/debugging.html">Debugging</a>
-    <a href="pages/changelog.html">Changelog</a>
-    <button id="themeToggle">☾</button>
-
-</nav>
-
-<section class="content">
-    <h1>TrinityShield v6</h1>
-    <p class="subtitle">Integrity • Protection • Auto-Repair for ChatGPT</p>
-
-    <p>
-        TrinityShield is a modular browser-side stability framework that repairs corrupted
-        local browser data, enhances ChatGPT startup reliability, and monitors the integrity
-        of your runtime environment.
-    </p>
-
-    <a href="https://github.com/Trinity963/TrinityShield/raw/main/TrinityShield.user.js" class="install-btn">
-        Install TrinityShield
-    </a>
-
-    <h2>Core Features</h2>
+    <p>TrinityShield is a next-generation integrity guardian for ChatGPT, featuring:</p>
     <ul>
-        <li>Safe Boot Rendering System</li>
-        <li>Auto-Purifier (Cache / IDB / LocalStorage repair)</li>
+        <li>Safe Boot System</li>
+        <li>Corruption Detection Engine</li>
+        <li>Auto-Purifier</li>
         <li>Conversation Integrity Scanner</li>
-        <li>Full Power Audit (CDN / SW / Cache Sources)</li>
-        <li>Debug Panel (Real-Time Log Capture)</li>
-        <li>Module Framework</li>
-        <li>Purple Theme UI</li>
+        <li>Dashboard Overlay</li>
+        <li>Advanced Storage & ServiceWorker Monitoring</li>
+        <li>Full Power Audit</li>
+        <li>CDN Distribution</li>
+        <li>Multi-version CI/CD Pipeline</li>
     </ul>
-</section>
 
-<footer>
-    TrinityShield v6 – MIT License – © Trinity963
-</footer>
-<script>
-const btn = document.createElement("div");
-btn.id = "backToTop";
-btn.innerHTML = "↑";
-document.body.appendChild(btn);
+    <hr />
 
-window.addEventListener("scroll", () => {
-    btn.style.display = window.scrollY > 300 ? "flex" : "none";
-});
-btn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
-document.getElementById("themeToggle").onclick = () => {
-    document.body.classList.toggle("light-mode");
-    localStorage.setItem("tsTheme", document.body.classList.contains("light-mode") ? "light" : "dark");
-};
+    <h2>📦 Installation</h2>
+    <p>See: <a href="/TrinityShield/install">Install TrinityShield</a></p>
 
-// Load saved theme
-if (localStorage.getItem("tsTheme") === "light") {
-    document.body.classList.add("light-mode");
-}
-</script>
+    <h2>🚀 Quickstart</h2>
+    <p>See: <a href="/TrinityShield/guide/quickstart">Quickstart Guide</a></p>
+
+    <h2>🧠 Architecture</h2>
+    <p>See: <a href="/TrinityShield/architecture">Developer Architecture</a></p>
+
+    <h2>🔥 Modules</h2>
+    <p>See: <a href="/TrinityShield/modules">Module Documentation</a></p>
+
+    <h2>🔍 Diagnostics</h2>
+    <p>See: <a href="/TrinityShield/debugging">Self Diagnostics & Stress Tests</a></p>
+
+    <h2>📊 Monitoring</h2>
+    <p>See: <a href="/TrinityShield/monitoring">Monitoring Dashboard</a></p>
+
+</div>
 
 </body>
 </html>
