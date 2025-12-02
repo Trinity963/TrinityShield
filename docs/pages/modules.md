@@ -1,7 +1,7 @@
 ---
 title: Modules
 layout: default
-permalink: /modules
+permalink: /modules/
 ---
 
 <!-- your existing HTML begins below -->

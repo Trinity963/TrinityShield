@@ -1,7 +1,7 @@
 ---
 title: Changelog
 layout: default
-permalink:Changelog
+permalink:/Changelog/
 ---
 
 <!-- your existing HTML begins below -->

@@ -2,7 +2,7 @@
 ---
 title: Debugging
 layout: default
-permalink: /debugging
+permalink: /debugging/
 ---
 
 
