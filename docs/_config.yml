@@ -1,0 +1,43 @@
+title: TrinityShield Documentation
+description: Official documentation portal for TrinityShield.
+
+
+url: "https://trinity963.github.io"
+baseurl: "/TrinityShield"   
+
+markdown: kramdown
+kramdown:
+  input: GFM
+
+
+include:
+  - docs
+  - docs/assets
+  - docs/css
+  - docs/_includes
+  - docs/_layouts
+  - docs/_data
+  - docs/api
+  - docs/pages
+  - docs/releases
+  - docs/tutorials
+
+
+exclude:
+  - node_modules
+  - "*.sh"
+  - "*.bat"
+  - package.json
+  - package-lock.json
+  - .venv/
+
+
+collections:
+  pages:
+    output: true
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
