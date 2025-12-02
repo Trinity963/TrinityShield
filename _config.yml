@@ -1,47 +1,39 @@
-# ------------------------------
-# TrinityShield Documentation Site
-# ------------------------------
+title: TrinityShield Documentation
+description: Official documentation for TrinityShield.
 
-title: "TrinityShield Documentation"
-description: "Integrity Guardian System for ChatGPT"
-url: "https://trinity963.github.io"
+# GitHub Pages config
 baseurl: "/TrinityShield"
+url: "https://trinity963.github.io"
 
-# Enable GitHub Pages defaults
 markdown: kramdown
 kramdown:
   input: GFM
-  hard_wrap: false
 
-theme: minima   # (ignored because we override layouts)
-
-plugins:
-  - jekyll-seo-tag
-  - jekyll-feed
-
-# Permalink handling
-permalink: pretty
-
-# Include folders used for documentation
+# Include all docs assets
 include:
-  - _layouts
-  - _includes
-  - pages
-  - api
-  - css
+  - docs
+  - docs/assets
+  - docs/css
+  - docs/js
+  - docs/_data
+  - docs/_includes
+  - docs/_layouts
 
-# Exclude items not used in production
 exclude:
-  - node_modules
-  - vendor
-  - Gemfile
-  - Gemfile.lock
-  - README.md
-  - LICENSE
+  - "*.sh"
+  - "*.bat"
+  - "node_modules"
+  - "package.json"
+  - "package-lock.json"
 
-# SEO
-seo:
-  type: "WebSite"
-  name: "TrinityShield Docs"
-  twitter:
-    username: "Trinity963"
+# Where Jekyll reads documents from
+collections:
+  pages:
+    output: true
+
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: default
