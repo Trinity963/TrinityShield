@@ -1,69 +1,23 @@
-
 ---
 title: Debugging
 layout: default
 permalink: /debugging/
 ---
 
+# Debugging Tools
 
-<!-- your existing HTML begins below -->
+TrinityShield includes a live diagnostics panel.
 
+## What it captures
 
-<meta charset="UTF-8">
-<title>Debugging – TrinityShield</title>
-<link rel="stylesheet" href="../css/purple-theme.css">
+- Console warnings & errors  
+- Corrupted chunk detection  
+- Service Worker inconsistencies  
+- Cache & Storage errors  
+- Integrity failures  
+- Boot pipeline traces  
 
+---
 
-<header><img src="../assets/banner.svg" class="banner"></header>
-<nav>
-    <a href="../index.html">Home</a>
-    <a href="installation.html">Installation</a>
-    <a href="modules.html">Modules</a>
-    <a href="architecture.html">Architecture</a>
-    <a href="debugging.html" class="active">Debugging</a>
-    <a href="changelog.html">Changelog</a>
-    <button id="themeToggle">☾</button>
+## Example Output
 
-</nav>
-
-<div class="content">
-
-<h1>Debugging Tools</h1>
-
-<ul>
-    <li>Debug panel logs console output</li>
-    <li>Shows warnings, errors, system messages</li>
-    <li>Captures SW / Cache / JSON integrity messages</li>
-</ul>
-
-<pre><code>[TSv6] Debug Panel engaged...
-[TSv6] Warning: Broken code block detected
-</code></pre>
-
-</div>
-
-<footer>TrinityShield v6 – MIT License</footer>
-
-<script>
-const btn = document.createElement("div");
-btn.id = "backToTop";
-btn.innerHTML = "↑";
-document.body.appendChild(btn);
-
-window.addEventListener("scroll", () => {
-    btn.style.display = window.scrollY > 300 ? "flex" : "none";
-});
-btn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
-document.getElementById("themeToggle").onclick = () => {
-    document.body.classList.toggle("light-mode");
-    localStorage.setItem("tsTheme", document.body.classList.contains("light-mode") ? "light" : "dark");
-};
-
-// Load saved theme
-if (localStorage.getItem("tsTheme") === "light") {
-    document.body.classList.add("light-mode");
-}
-</script>
-
-</body>
-</html>

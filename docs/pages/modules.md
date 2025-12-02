@@ -4,67 +4,31 @@ layout: default
 permalink: /modules/
 ---
 
-<!-- your existing HTML begins below -->
+# Module Overview
 
+TrinityShield uses a modular architecture.  
+Each subsystem can be updated independently.
 
+## Core Modules
 
+- **Core Engine** – Boot pipeline + system supervisor  
+- **Corruption Engine** – Cache / JSON / IDB integrity scans  
+- **Auto-Purifier** – Repairs corrupted stored structures  
+- **Safe Boot v2** – Multi-stage validation  
+- **Conversation Scanner** – Stability + intent verification  
+- **Full Power Audit** – CDN, SW, routing audits  
+- **Debug Panel** – Logs warnings, errors, & integrity messages  
 
-<meta charset="UTF-8">
-<title>Modules – TrinityShield</title>
-<link rel="stylesheet" href="../css/purple-theme.css">
+---
 
+## Behavior Modules
 
-<header><img src="../assets/banner.svg" class="banner"></header>
-<nav>
-    <a href="../index.html">Home</a>
-    <a href="installation.html">Installation</a>
-    <a href="modules.html" class="active">Modules</a>
-    <a href="architecture.html">Architecture</a>
-    <a href="debugging.html">Debugging</a>
-    <a href="changelog.html">Changelog</a>
-    <button id="themeToggle">☾</button>
+These affect the in-page UI:
 
-</nav>
+- **Hover Reveal Menu**
+- **Auto-Fade Menu**
+- **Toggle Menu**
+- **Ghost Fade Menu**
 
-<div class="content">
+These are located in:
 
-<h1>Modules Overview</h1>
-
-<p>TrinityShield is built using a modular architecture:</p>
-
-<ul>
-  <li><strong>Core</strong> – Boot pipeline, dashboard</li>
-  <li><strong>Corruption Engine</strong> – Cache/JSON/IDB scans</li>
-  <li><strong>Auto-Purifier</strong> – Repairs corrupted local data</li>
-  <li><strong>Safe Boot V2</strong> – Staged validation system</li>
-  <li><strong>Conversation Scanner</strong> – Output stability</li>
-  <li><strong>Full Power Audit</strong> – CDN, SW, routing inspections</li>
-  <li><strong>Debug Panel</strong> – Console capture</li>
-</ul>
-
-</div>
-
-<footer>TrinityShield v6 – MIT License</footer>
-<script>
-const btn = document.createElement("div");
-btn.id = "backToTop";
-btn.innerHTML = "↑";
-document.body.appendChild(btn);
-
-window.addEventListener("scroll", () => {
-    btn.style.display = window.scrollY > 300 ? "flex" : "none";
-});
-btn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
-document.getElementById("themeToggle").onclick = () => {
-    document.body.classList.toggle("light-mode");
-    localStorage.setItem("tsTheme", document.body.classList.contains("light-mode") ? "light" : "dark");
-};
-
-// Load saved theme
-if (localStorage.getItem("tsTheme") === "light") {
-    document.body.classList.add("light-mode");
-}
-</script>
-
-</body>
-</html>

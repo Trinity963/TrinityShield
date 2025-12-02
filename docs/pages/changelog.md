@@ -1,68 +1,16 @@
 ---
 title: Changelog
 layout: default
-permalink:/Changelog/
+permalink: /changelog/
 ---
 
-<!-- your existing HTML begins below -->
+# Changelog
 
+## v6.0.0
+- Modular architecture  
+- Safe Boot v2  
+- Auto-Purifier  
+- Debug Panel  
+- Full Power Audit  
+- Purple Docs UI  
 
-
-
-<meta charset="UTF-8">
-<title>Changelog – TrinityShield</title>
-<link rel="stylesheet" href="../css/purple-theme.css">
-
-
-<header><img src="../assets/banner.svg" class="banner"></header>
-<nav>
-    <a href="../index.html">Home</a>
-    <a href="installation.html">Installation</a>
-    <a href="modules.html">Modules</a>
-    <a href="architecture.html">Architecture</a>
-    <a href="debugging.html">Debugging</a>
-    <a href="changelog.html" class="active">Changelog</a>
-    <button id="themeToggle">☾</button>
-
-</nav>
-
-<div class="content">
-
-<h1>Changelog</h1>
-
-<h3>v6.0.0</h3>
-<ul>
-    <li>Modular architecture</li>
-    <li>Safe Boot v2</li>
-    <li>Auto-Purifier</li>
-    <li>Debug Panel</li>
-    <li>Full Power Audit</li>
-    <li>Purple Theme UI</li>
-</ul>
-
-</div>
-
-<footer>TrinityShield v6 – MIT License</footer>
-<script>
-const btn = document.createElement("div");
-btn.id = "backToTop";
-btn.innerHTML = "↑";
-document.body.appendChild(btn);
-
-window.addEventListener("scroll", () => {
-    btn.style.display = window.scrollY > 300 ? "flex" : "none";
-});
-btn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
-document.getElementById("themeToggle").onclick = () => {
-    document.body.classList.toggle("light-mode");
-    localStorage.setItem("tsTheme", document.body.classList.contains("light-mode") ? "light" : "dark");
-};
-
-// Load saved theme
-if (localStorage.getItem("tsTheme") === "light") {
-    document.body.classList.add("light-mode");
-}
-</script>
-
-</body>
-</html>
